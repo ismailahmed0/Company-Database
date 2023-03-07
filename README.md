@@ -1,3 +1,3 @@
 # Database-System
 
-Created a database in SQL for a company that purchases parts from vendors to produce some products. The company has several departments, marketing sites, and parts supply vendors.
+Created a database in SQL where a company with employees, departments and marketing sites could purchase parts from vendors to produce products.
