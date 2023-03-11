@@ -1,0 +1,92 @@
+VIEWS:
+1) CREATE VIEW Avg_Monthly_Salary AS SELECT Monthly_Salary.Employee_ID,
+AVG(Amount)
+
+FROM Monthly_Salary, Employee
+WHERE Employee.Employee_ID = Monthly_Salary.Employee_ID
+GROUP BY Monthly_Salary.Employee_ID;
+
+2) CREATE VIEW Number_Interview_Rounds AS SELECT COUNT(*), I.Candidate
+FROM Interview AS I, Job_position AS J
+WHERE I.Interview_grade > 60 AND I.Job_ID = J.Job_ID;
+
+3) CREATE VIEW Number_Products_Sold AS SELECT COUNT(P.Product_type),
+P.product_type FROM Product AS P JOIN Sells AS S ON P.Product_ID = S.Product_ID
+GROUP BY P.Product_ID;
+
+4) CREATE VIEW Part_Purchase_Cost AS SELECT P.Product_ID, SUM(S2.Part_price)
+FROM Product AS P, Supply1 AS S1
+JOIN Supply2 AS S2 ON S1.Part_number = S2.Part_number
+GROUP BY P.Product_ID = S1.Product_ID;
+
+
+SQL QUERIES:
+1. SELECT I.Interviewer_ID, P.Fname AS Interviewer_Fname, P.Lname AS
+Interviewer_Lname from Person AS P, Interview AS I, Job_position AS J
+WHERE I.Candidate = 'Hellen Cole' AND J.Job_ID = '11111' AND P.Personal_ID =
+I.Interviewer_ID;
+
+2. SELECT J.Job_ID FROM Job_position AS J JOIN Department AS D WHERE D.Dept_ID
+= 'Marketing' AND J.Posted_date BETWEEN '2011-01-01' AND '2011-01-31';
+
+3. SELECT Employee_ID, Fname FROM Employee as E, Person as P WHERE Super_ssn
+IS NULL AND E.Employee_ID = P.Personal_ID;
+
+4. SELECT MS.Site_ID, Ms_location FROM Marketing_Site as MS, Sells as S,
+MS_locations as L WHERE MS.Site_ID = S.Site_ID AND Sale_time NOT BETWEEN
+'2011-03-01' AND '2011-03-31' AND MS.Site_ID = L.Site_ID;
+
+5. SELECT DISTINCT(JP.Job_ID), Job_description FROM Job_position AS JP, Interview
+as I WHERE JP.Job_ID = I.Job_ID AND Posted_date <= '2022-10-20' AND JP.Job_ID
+NOT IN (SELECT JP.Job_ID FROM Job_position AS JP, Interview as I WHERE
+JP.Job_ID = I.Job_ID GROUP BY Candidate_ID HAVING SUM(Interview_rounds) >= 5
+AND AVG(Interview_grade) > 70);
+
+6. SELECT Product.Product_ID, Sells.Salespeople FROM Product, Sells WHERE
+Product.List_price > 200 AND Sells.Product_ID = Product.Product_ID;
+
+7. SELECT Job_position.Dept_ID, Department.Dept_name FROM Job_position,
+Department WHERE Job_position.Dept_ID = Department.Dept_ID AND
+Job_position.Dept_ID NOT IN ( SELECT DISTINCT Department.Dept_ID FROM
+Department, Job_position WHERE Department.Dept_ID = Job_position.Dept_ID
+AND Job_position.Posted_date BETWEEN '2011-01-01' AND '2011-02-01' );
+
+8. SELECT E.Employee_ID, P.Fname, WF.Dept_ID FROM Employee as E, Person as P,
+Works_for as WF, Applicant as A WHERE E.Employee_ID = P.Personal_ID AND
+E.Employee_ID = WF.Emp_ID AND E.App_ID = A.Applicant_ID AND A.Job_ID =
+'12345';
+
+9. SELECT Product.Product_type, COUNT(Product.Product_type) FROM Sells, Product
+WHERE Sells.Product_ID = Product.Product_ID GROUP BY Product.Product_type;
+
+10. SELECT Product.Product_type FROM Product, Part JOIN Supply1 ON
+Supply1.Part_number = Part.Part_number AND Product.Product_ID =
+Supply1.Product_ID GROUP BY Product.Product_ID ORDER BY
+List_price-SUM(Price*Num_product_parts) DESC LIMIT 1;
+
+11. SELECT Emp_ID, Person.Fname FROM Works_for, Person WHERE
+Person.Personal_ID = Works_for.Emp_ID GROUP BY Emp_ID HAVING
+COUNT(Dept_ID) = (SELECT COUNT(Dept_ID) FROM Department);
+
+12. SELECT P.Fname, P.Email_address FROM Person P, (SELECT
+DISTINCT(Candidate_ID) as Candidate_ID FROM Interview GROUP BY Candidate_ID
+HAVING SUM(Interview_rounds) >= 5 AND AVG(Interview_grade) > 70) as C WHERE
+P.Personal_ID = C.Candidate_ID;
+
+13. SELECT Person.Fname, Person.Email_address, Person_phone.Phone_number FROM
+Person, Person_phone WHERE Person_phone.Person_ID = Person.Personal_ID AND
+Person.Personal_ID NOT IN (SELECT DISTINCT(Candidate_ID) as Candidate_ID
+FROM Interview GROUP BY Candidate_ID HAVING SUM(Interview_rounds) < 5 OR
+AVG(Interview_grade) <= 70);
+
+14. SELECT Person.Fname, Person.Lname, Person.Personal_ID FROM Person WHERE
+Person.Personal_ID IN (SELECT Employee.Employee_ID FROM Employee WHERE
+Employee.Amount = (SELECT MAX(Employee.Amount) FROM Employee));
+
+15. SELECT Vendor.Vendor_ID, Vendor.Name FROM Vendor, Supply1, Part WHERE
+Vendor.Vendor_ID IN (SELECT Product.Product_ID FROM Product WHERE
+Product.Product_ID IN (SELECT DISTINCT Supply1.Product_ID FROM Supply1, Part
+WHERE Supply1.Part_number IN (SELECT Part.Part_number FROM PART WHERE
+Part_type = 'Cup')) AND Product.Weight < 4) AND Vendor.Vendor_ID =
+Supply1.Product_ID AND Supply1.Part_number = Part.Part_number ORDER BY Price
+ASC LIMIT 1;
