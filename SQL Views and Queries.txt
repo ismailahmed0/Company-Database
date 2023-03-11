@@ -1,4 +1,4 @@
-VIEWS:
+**VIEWS:**
 1) CREATE VIEW Avg_Monthly_Salary AS SELECT Monthly_Salary.Employee_ID,
 AVG(Amount)
 
@@ -20,7 +20,7 @@ JOIN Supply2 AS S2 ON S1.Part_number = S2.Part_number
 GROUP BY P.Product_ID = S1.Product_ID;
 
 
-SQL QUERIES:
+**SQL QUERIES:**
 1. SELECT I.Interviewer_ID, P.Fname AS Interviewer_Fname, P.Lname AS
 Interviewer_Lname from Person AS P, Interview AS I, Job_position AS J
 WHERE I.Candidate = 'Hellen Cole' AND J.Job_ID = '11111' AND P.Personal_ID =
